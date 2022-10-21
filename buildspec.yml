@@ -39,9 +39,11 @@ phases:
         - export KUBECONFIG=$HOME/.kube/config
         - echo `ls -l`
   build:
+    on-failure: ABORT
     commands:
       - docker build --tag $REPOSITORY_URI:$TAG .
-
+      - export APP=$REPOSITORY_URI:$TAG
+      - docker run $APP bash -c "python test_main.py"
   post_build:
     commands:
       - docker push $REPOSITORY_URI:$TAG
